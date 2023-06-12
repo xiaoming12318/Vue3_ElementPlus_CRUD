@@ -56,7 +56,7 @@ onMounted(()=>{
         </el-table>
     </div>
 
-    <Edit ref="editRef" />
+    <Edit ref="editRef" @on-update="getList"/>
 </template>
 
 

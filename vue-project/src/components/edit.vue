@@ -1,7 +1,9 @@
 <script setup>
+import axios from 'axios';
 import {ref,reactive} from 'vue';
 
 const list =reactive({
+    id:'',
     name:'',
     place:''
 })
@@ -9,11 +11,29 @@ const dialogVisible=ref(false)
 const openDialog=(row)=>{
     list.name=row.name
     list.place=row.place
+    list.id=row.id
     dialogVisible.value=true
 }
 defineExpose({
     openDialog
 }) 
+
+const emit=defineEmits(['on-update'])
+const onUpdate=async()=>{
+    console.log(list.id)
+    await axios({
+        method:'patch',
+        url:`/edit/${list.id}`,
+        data:{
+            name:list.name,
+            place:list.place
+        },
+    })
+    .then((res)=>{
+        emit('on-update')
+        dialogVisible.value=false
+    })
+}
 
 </script>
 
@@ -25,7 +45,7 @@ defineExpose({
     title="编辑"
     width="400px"
     >
-        <el-form :model="form" label-width="50px">
+        <el-form label-width="50px">
             <el-form-item label="姓名">
                 <el-input v-model="list.name" autocomplete="off"/>
             </el-form-item>
